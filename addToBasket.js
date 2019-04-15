@@ -72,32 +72,10 @@ function pickItem()
 {
     var found = false;
 
-    // var p = setInterval(function()
-    //     {
-    //         while (found == false)
-    //         {
-    //             chrome.storage.sync.get('ITEM_NAME', function(data) 
-    //             {
-    //                 var items = document.getElementsByClassName('name-link');
-                    
-    //                 for (var i = 0; i < items.length - 1; i++)
-    //                 {
-    //                     if ((items[i].innerHTML).includes(ITEM_NAME) && (items[i+1].innerHTML).includes(COLOR))
-    //                     {
-    //                         found = true;
-    //                         clearInterval(p);
-    //                         chrome.runtime.sendMessage({redirect: items[i].href});
-    //                         break;
-    //                     }
-    //                 }
-    //             });
-    //             location.reload();
-    //         }
-            
-    //     }, REFRESH_INTERVAL);
-
-           // while (found == false)
-            //{
+    var p = setInterval(function()
+        {
+            while (found == false)
+            {
                 chrome.storage.sync.get('ITEM_NAME', function(data) 
                 {
                     var items = document.getElementsByClassName('name-link');
@@ -107,17 +85,16 @@ function pickItem()
                         if ((items[i].innerHTML).includes(ITEM_NAME) && (items[i+1].innerHTML).includes(COLOR))
                         {
                             found = true;
+                            clearInterval(p);
                             chrome.runtime.sendMessage({redirect: items[i].href});
                             break;
                         }
                     }
                 });
-                // if (found == false)
-                // {
-                // pausecomp(4000);
-                // location.reload();
-                // }
-            //}
+                location.reload();
+            }
+            
+        }, REFRESH_INTERVAL);
 
 }
 
