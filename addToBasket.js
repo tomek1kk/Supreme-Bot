@@ -2,7 +2,7 @@ var url = window.location.href;
 
 var CATEGORY = "t-shirts";
 var ITEM_NAME = "Keyboard Tee";
-var SIZE = "0"; // x-large
+var SIZE = "0";
 var COLOR = "Black";
 
 var BILLING_INFO = {
@@ -28,6 +28,7 @@ const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 if (url == MAIN_URL)
 {
+    //sessionStorage.setItem('counter', '0');
     pickCategory();
 }
 if (url == CATEGORY_URL)
@@ -60,43 +61,40 @@ function pickCategory()
         chrome.runtime.sendMessage({redirect: replace});
     });
 }
-function pausecomp(millis)
-{
-    var date = new Date();
-    var curDate = null;
-    do { curDate = new Date(); }
-    while(curDate-date < millis);
-}
 
 function pickItem()
 {
     var found = false;
 
-    var p = setInterval(function()
-        {
-            while (found == false)
-            {
-                chrome.storage.sync.get('ITEM_NAME', function(data) 
-                {
-                    var items = document.getElementsByClassName('name-link');
-                    
-                    for (var i = 0; i < items.length - 1; i++)
-                    {
-                        if ((items[i].innerHTML).includes(ITEM_NAME) && (items[i+1].innerHTML).includes(COLOR))
-                        {
-                            found = true;
-                            clearInterval(p);
-                            chrome.runtime.sendMessage({redirect: items[i].href});
-                            break;
-                        }
-                    }
-                });
-                location.reload();
-            }
-            
-        }, REFRESH_INTERVAL);
+    // TESTING NEW ITEMS ADDING
 
+    // var x = parseInt(sessionStorage.getItem('counter'));
+    // x++;
+    // sessionStorage.setItem('counter', x.toString());
+    // if (x > 3)
+    // {
+    //     ITEM_NAME = "Keyboard Tee";
+    // }
+    // console.log(ITEM_NAME);
+
+    chrome.storage.sync.get('ITEM_NAME', function(data) 
+    {
+        var items = document.getElementsByClassName('name-link');
+                    
+        for (var i = 0; i < items.length - 1; i++)
+        {
+            if ((items[i].innerHTML).includes(ITEM_NAME) && (items[i+1].innerHTML).includes(COLOR))
+            {
+                found = true;
+                chrome.runtime.sendMessage({redirect: items[i].href});
+                break;
+            }
+        }
+    });
+    if (found == false)
+        setTimeout(function() {location.reload();}, REFRESH_INTERVAL);
 }
+
 
 function fillCard(index)
 {
