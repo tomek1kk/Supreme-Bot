@@ -75,7 +75,7 @@ function pickItem()
     // {
     //     ITEM_NAME = "Keyboard Tee";
     // }
-    // console.log(ITEM_NAME);
+    console.log(sessionStorage.getItem('ITEM_NAME'));
 
     chrome.storage.sync.get('ITEM_NAME', function(data) 
     {
