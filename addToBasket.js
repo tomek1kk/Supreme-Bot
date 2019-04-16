@@ -26,8 +26,20 @@ const MAIN_URL = "https://www.supremenewyork.com/shop/all";
 const CATEGORY_URL = MAIN_URL + "/" + CATEGORY;
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
+// ----- DROP TIME -----
+var hour = 22;
+var minute = 27;
+var seconds = 00;
+
+
+
 if (url == MAIN_URL)
 {
+    while(true) {
+        var today = new Date();
+        if(today.getHours() >= hour && today.getMinutes() >= minute && today.getSeconds() >= seconds) break;
+        pausecomp(500);
+    }
     //sessionStorage.setItem('counter', '0');
     pickCategory();
 }
@@ -150,6 +162,12 @@ function setInput(element, value) {
     element.blur();
   }
 
-
+  function pausecomp(millis)
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < millis);
+}
 
 
