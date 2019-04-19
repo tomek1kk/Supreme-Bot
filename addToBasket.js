@@ -1,9 +1,9 @@
 var url = window.location.href;
 
-var CATEGORY = "t-shirts";
-var ITEM_NAME = "Keyboard Tee";
-var SIZE = "0";
-var COLOR = "Black";
+var CATEGORY = "shirts";
+var ITEM_NAME = "Vertical Stripe";
+var SIZE = "Large";
+var COLOR = "Navy";
 
 var BILLING_INFO = {
     //"name": "Tomasz Kostowski",
@@ -29,9 +29,9 @@ const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 // ----- DROP TIME -----
 var TIMER = true;
-var hour = 14;
-var minute = 58;
-var seconds = 00;
+var hour = 11;
+var minute = 59;
+var seconds = 50;
 
 if (url == MAIN_URL)
 {
@@ -62,7 +62,7 @@ if (url.length > CATEGORY_URL.length + 3)
 {
     pickSize();
     addToBasket();
-    setTimeout("checkout()", 300);
+    checkout();
 }
 if (url == CHECKOUT_URL)
 {
@@ -79,9 +79,10 @@ function pickCategory()
 {
     chrome.storage.sync.get('CATEGORY', function(data)
     {
-        var redirect = "https://www.supremenewyork.com/shop/all/jackets";
-        var replace = redirect.replace("jackets", CATEGORY);
-        chrome.runtime.sendMessage({redirect: replace});
+        //var redirect = "https://www.supremenewyork.com/shop/all/jackets";
+        var link = MAIN_URL + "/" + CATEGORY;
+        //var replace = redirect.replace("jackets", CATEGORY);
+        chrome.runtime.sendMessage({redirect: link});
     });
 }
 
@@ -159,12 +160,28 @@ function addToBasket()
 
 function pickSize()
 {
-    document.getElementById("size").selectedIndex = SIZE;
+    var selectbox = document.getElementById("size");
+    for (var i = 0; i < selectbox.length; i++)
+    {
+        if (selectbox.options[i].label == SIZE)
+        {
+            selectbox.selectedIndex = i;
+            break;
+        }
+    }
 }
 
 function checkout()
 {
-    chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
+    //chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
+    //document.getElementsByClassName("button checkout")[0].click();
+    var p = setInterval(function() { 
+        if (document.getElementById("cart").className != "hidden")
+        {
+            clearInterval(p);
+            chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
+        }
+    }, 100);
 }
 
 function setInput(element, value) {
