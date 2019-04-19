@@ -22,14 +22,40 @@ var ROK_KARTY = 2020;
 var CHECKOUT_DELAY = 3000;
 var REFRESH_INTERVAL = 2000;
 
+
 const MAIN_URL = "https://www.supremenewyork.com/shop/all";
 const CATEGORY_URL = MAIN_URL + "/" + CATEGORY;
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
+// ----- DROP TIME -----
+var TIMER = true;
+var hour = 14;
+var minute = 58;
+var seconds = 00;
+
+
+
 if (url == MAIN_URL)
 {
-    //sessionStorage.setItem('counter', '0');
-    pickCategory();
+	//sessionStorage.setItem('counter', '0');
+    //while(true) {
+    //    var today = new Date();
+    //    if(today.getHours() >= hour && today.getMinutes() >= minute && today.getSeconds() >= seconds) break;
+    //    pausecomp(500);
+    //}
+	
+	if (TIMER == true)
+	{
+        console.log("jestem tu");
+		var today = new Date();
+        var totalTime = ((hour - today.getHours()) * 3600000) + ((minute - today.getMinutes()) * 60000) + ((seconds - today.getSeconds()) * 1000);
+        console.log("Program will start in " + totalTime/1000 + " seconds");
+		setTimeout("pickCategory()", totalTime);
+	}
+	else
+	{
+		pickCategory();
+	}
 }
 if (url == CATEGORY_URL)
 {
@@ -75,7 +101,7 @@ function pickItem()
     // {
     //     ITEM_NAME = "Keyboard Tee";
     // }
-    console.log(sessionStorage.getItem('ITEM_NAME'));
+    // console.log(ITEM_NAME);
 
     chrome.storage.sync.get('ITEM_NAME', function(data) 
     {
@@ -150,6 +176,13 @@ function setInput(element, value) {
     element.blur();
   }
 
+  function pausecomp(millis)
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < millis);
+}
 
 
 
