@@ -33,8 +33,6 @@ var hour = 14;
 var minute = 58;
 var seconds = 00;
 
-
-
 if (url == MAIN_URL)
 {
 	//sessionStorage.setItem('counter', '0');
@@ -46,7 +44,6 @@ if (url == MAIN_URL)
 	
 	if (TIMER == true)
 	{
-        console.log("jestem tu");
 		var today = new Date();
         var totalTime = ((hour - today.getHours()) * 3600000) + ((minute - today.getMinutes()) * 60000) + ((seconds - today.getSeconds()) * 1000);
         console.log("Program will start in " + totalTime/1000 + " seconds");
