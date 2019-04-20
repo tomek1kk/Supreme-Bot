@@ -1,7 +1,7 @@
 var url = window.location.href;
 
-var items = [ ["shirts", "Vertical Stripe", "Large", "Navy"] ,
-              ["sweatshirts", "Zip", "Large", "Red"] ];
+var items = [ ["shirts", ["Vertical Stripe"], "Large", ["Navy"]] ,
+              ["sweatshirts", ["Zip"], "Large", ["Red"]] ];
 
 var BILLING_INFO = {
     //"name": "Tomasz Kostowski",
@@ -25,7 +25,7 @@ const MAIN_URL = "https://www.supremenewyork.com/shop/all";
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 // ----- DROP TIME -----
-var TIMER = true;
+var TIMER = false;
 var hour = 18;
 var minute = 22;
 var seconds = 20;
@@ -105,15 +105,21 @@ function pickItem(name, color)
     // console.log(ITEM_NAME);
     chrome.storage.sync.get('name', function(data) 
     {
-        var items = document.getElementsByClassName('name-link');
+        var products = document.getElementsByClassName('name-link');
                     
-        for (var i = 0; i < items.length - 1; i++)
+        for (var i = 0; i < products.length - 1; i++)
         {
-            if ((items[i].innerHTML).includes(name) && (items[i+1].innerHTML).includes(color))
+            for (var j = 0; j < name.length; j++)
             {
-                found = true;
-                chrome.runtime.sendMessage({redirect: items[i].href});
-                break;
+                for (var k = 0; k < color.length; k++)
+                {
+                    if ((products[i].innerHTML).includes(name[j]) && (products[i+1].innerHTML).includes(color[k]))
+                    {
+                        found = true;
+                        chrome.runtime.sendMessage({redirect: products[i].href});
+                        break;
+                    }
+                }
             }
         }
     });
