@@ -1,15 +1,7 @@
 var url = window.location.href;
 
-var CATEGORY = "shirts";
-var ITEM_NAME = "Vertical Stripe";
-var SIZE = "Large";
-var COLOR = "Navy";
-
-var CATEGORY2 = "sweatshirts";
-var ITEM_NAME2 = "Zip";
-var SIZE2 = "Large";
-var COLOR2 = "Red";
-
+var items = [ ["shirts", "Vertical Stripe", "Large", "Navy"] ,
+              ["sweatshirts", "Zip", "Large", "Red"] ];
 
 var BILLING_INFO = {
     //"name": "Tomasz Kostowski",
@@ -30,50 +22,56 @@ var REFRESH_INTERVAL = 2000;
 
 
 const MAIN_URL = "https://www.supremenewyork.com/shop/all";
-const CATEGORY_URL = MAIN_URL + "/" + CATEGORY;
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 // ----- DROP TIME -----
-var TIMER = false;
-var hour = 17;
-var minute = 59;
-var seconds = 50;
+var TIMER = true;
+var hour = 18;
+var minute = 22;
+var seconds = 20;
 
 if (url == MAIN_URL)
 {
-    //sessionStorage.setItem('counter', '0');
-    //pickCategory();
-	//sessionStorage.setItem('counter', '0');
-    //while(true) {
-    //    var today = new Date();
-    //    if(today.getHours() >= hour && today.getMinutes() >= minute && today.getSeconds() >= seconds) break;
-    //    pausecomp(500);
-    //}
-
+    sessionStorage.setItem('itemsAdded', '0');
 	if (TIMER == true)
 	{
-        var url = 'http://date.jsontest.com/',
-        ud = (+new Date());
+        var url = 'http://date.jsontest.com/';
+        var ud = (+new Date());
         var today = new Date(0);
         today.setUTCMilliseconds(ud);
         var totalTime = ((hour - today.getHours()) * 3600000) + ((minute - today.getMinutes()) * 60000) + ((seconds - today.getSeconds()) * 1000);
         console.log("Program will start in " + totalTime/1000 + " seconds");
-		setTimeout("pickCategory()", totalTime);
+		setTimeout("pickCategory(items[0][0])", totalTime);
 	}
 	else
 	{
-		pickCategory();
+		pickCategory(items[0][0]);
 	}
 }
-if (url == CATEGORY_URL)
+if (url == MAIN_URL + "/" + items[sessionStorage.getItem('itemsAdded')][0])
 {
-    pickItem();
+    pickItem(items[sessionStorage.getItem('itemsAdded')][1], items[sessionStorage.getItem('itemsAdded')][3]);
 }
-if (url.length > CATEGORY_URL.length + 3)
+if (url.length > MAIN_URL.length + 15)
 {
-    pickSize();
+    var x = parseInt(sessionStorage.getItem('itemsAdded'));
+    x++;
+    sessionStorage.setItem('itemsAdded', x.toString());
+    pickSize(items[x - 1][2]);
     addToBasket();
-    checkout();
+
+
+    var p = setInterval(function() { 
+        if (document.getElementById("cart").className != "hidden" && document.getElementById("items-count").textContent[0] == x.toString())
+        {
+            clearInterval(p);
+            if (x >= items.length)
+                checkout();
+            else
+                pickCategory(items[x][0]);
+        }
+    }, 100);
+
 }
 if (url == CHECKOUT_URL)
 {
@@ -84,21 +82,16 @@ function processPayment()
 {
     document.getElementsByName("commit")[0].click();
 }
-function pickCategory()
+function pickCategory(cat)
 {
-    chrome.storage.sync.get('CATEGORY', function(data)
+    chrome.storage.sync.get('cat', function(data)
     {
-        var redirect = "https://www.supremenewyork.com/shop/all/jackets";
-        var replace = redirect.replace("jackets", CATEGORY);
-        chrome.runtime.sendMessage({redirect: replace});
-        //var redirect = "https://www.supremenewyork.com/shop/all/jackets";
-        var link = MAIN_URL + "/" + CATEGORY;
-        //var replace = redirect.replace("jackets", CATEGORY);
+        var link = MAIN_URL + "/" + cat;
         chrome.runtime.sendMessage({redirect: link});
     });
 }
 
-function pickItem()
+function pickItem(name, color)
 {
     var found = false;
     // TESTING NEW ITEMS ADDING
@@ -110,13 +103,13 @@ function pickItem()
     //     ITEM_NAME = "Keyboard Tee";
     // }
     // console.log(ITEM_NAME);
-    chrome.storage.sync.get('ITEM_NAME', function(data) 
+    chrome.storage.sync.get('name', function(data) 
     {
         var items = document.getElementsByClassName('name-link');
                     
         for (var i = 0; i < items.length - 1; i++)
         {
-            if ((items[i].innerHTML).includes(ITEM_NAME) && (items[i+1].innerHTML).includes(COLOR))
+            if ((items[i].innerHTML).includes(name) && (items[i+1].innerHTML).includes(color))
             {
                 found = true;
                 chrome.runtime.sendMessage({redirect: items[i].href});
@@ -163,13 +156,13 @@ function addToBasket()
         document.getElementsByName("commit")[0].click();
 }
 
-function pickSize()
+function pickSize(size)
 {
-    document.getElementById("size").selectedIndex = SIZE;
+    document.getElementById("size").selectedIndex = size;
     var selectbox = document.getElementById("size");
     for (var i = 0; i < selectbox.length; i++)
     {
-        if (selectbox.options[i].label == SIZE)
+        if (selectbox.options[i].label == size)
         {
             selectbox.selectedIndex = i;
             break;
@@ -179,16 +172,8 @@ function pickSize()
 
 function checkout()
 {
-    chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
-    //chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
-    //document.getElementsByClassName("button checkout")[0].click();
-    var p = setInterval(function() { 
-        if (document.getElementById("cart").className != "hidden")
-        {
-            clearInterval(p);
-            chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
-        }
-    }, 100);
+     chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
+
 }
 
 function setInput(element, value) {
