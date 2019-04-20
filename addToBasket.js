@@ -5,6 +5,12 @@ var ITEM_NAME = "Vertical Stripe";
 var SIZE = "Large";
 var COLOR = "Navy";
 
+var CATEGORY2 = "sweatshirts";
+var ITEM_NAME2 = "Zip";
+var SIZE2 = "Large";
+var COLOR2 = "Red";
+
+
 var BILLING_INFO = {
     //"name": "Tomasz Kostowski",
     //"email": "tomek1kkgw@gmail.com",
@@ -28,7 +34,7 @@ const CATEGORY_URL = MAIN_URL + "/" + CATEGORY;
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 // ----- DROP TIME -----
-var TIMER = true;
+var TIMER = false;
 var hour = 17;
 var minute = 59;
 var seconds = 50;
@@ -67,7 +73,6 @@ if (url.length > CATEGORY_URL.length + 3)
 {
     pickSize();
     addToBasket();
-    setTimeout("checkout()", 300);
     checkout();
 }
 if (url == CHECKOUT_URL)
