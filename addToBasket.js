@@ -29,22 +29,27 @@ const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 
 // ----- DROP TIME -----
 var TIMER = true;
-var hour = 11;
+var hour = 17;
 var minute = 59;
 var seconds = 50;
 
 if (url == MAIN_URL)
 {
+    //sessionStorage.setItem('counter', '0');
+    //pickCategory();
 	//sessionStorage.setItem('counter', '0');
     //while(true) {
     //    var today = new Date();
     //    if(today.getHours() >= hour && today.getMinutes() >= minute && today.getSeconds() >= seconds) break;
     //    pausecomp(500);
     //}
-	
+
 	if (TIMER == true)
 	{
-		var today = new Date();
+        var url = 'http://date.jsontest.com/',
+        ud = (+new Date());
+        var today = new Date(0);
+        today.setUTCMilliseconds(ud);
         var totalTime = ((hour - today.getHours()) * 3600000) + ((minute - today.getMinutes()) * 60000) + ((seconds - today.getSeconds()) * 1000);
         console.log("Program will start in " + totalTime/1000 + " seconds");
 		setTimeout("pickCategory()", totalTime);
@@ -62,6 +67,7 @@ if (url.length > CATEGORY_URL.length + 3)
 {
     pickSize();
     addToBasket();
+    setTimeout("checkout()", 300);
     checkout();
 }
 if (url == CHECKOUT_URL)
@@ -69,16 +75,17 @@ if (url == CHECKOUT_URL)
     autoFill(BILLING_INFO);
     setTimeout("processPayment()", CHECKOUT_DELAY);
 }
-
 function processPayment()
 {
     document.getElementsByName("commit")[0].click();
 }
-
 function pickCategory()
 {
     chrome.storage.sync.get('CATEGORY', function(data)
     {
+        var redirect = "https://www.supremenewyork.com/shop/all/jackets";
+        var replace = redirect.replace("jackets", CATEGORY);
+        chrome.runtime.sendMessage({redirect: replace});
         //var redirect = "https://www.supremenewyork.com/shop/all/jackets";
         var link = MAIN_URL + "/" + CATEGORY;
         //var replace = redirect.replace("jackets", CATEGORY);
@@ -89,9 +96,7 @@ function pickCategory()
 function pickItem()
 {
     var found = false;
-
     // TESTING NEW ITEMS ADDING
-
     // var x = parseInt(sessionStorage.getItem('counter'));
     // x++;
     // sessionStorage.setItem('counter', x.toString());
@@ -100,7 +105,6 @@ function pickItem()
     //     ITEM_NAME = "Keyboard Tee";
     // }
     // console.log(ITEM_NAME);
-
     chrome.storage.sync.get('ITEM_NAME', function(data) 
     {
         var items = document.getElementsByClassName('name-link');
@@ -118,17 +122,14 @@ function pickItem()
     if (found == false)
         setTimeout(function() {location.reload();}, REFRESH_INTERVAL);
 }
-
-
 function fillCard(index)
 {
     if (document.getElementById("cnb").value.length < nr_karty.length)
         document.getElementById("cnb").value += nr_karty[index];
 }
-
 function autoFill(info)
  {
-    if (TYP_KARTY == 1)
+    if (TYP_KARTY == 1) // MASTERCARD
     {
         document.getElementById("credit_card_type").selectedIndex = 2;
     }
@@ -151,7 +152,6 @@ function autoFill(info)
     document.getElementById("order_terms").checked = true;
     document.getElementById("order_terms").parentElement.classList.add('checked');
 }
-
 function addToBasket()
 {
     if (document.getElementsByName("commit")[0].value == "add to basket")
@@ -160,6 +160,7 @@ function addToBasket()
 
 function pickSize()
 {
+    document.getElementById("size").selectedIndex = SIZE;
     var selectbox = document.getElementById("size");
     for (var i = 0; i < selectbox.length; i++)
     {
@@ -173,6 +174,7 @@ function pickSize()
 
 function checkout()
 {
+    chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
     //chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
     //document.getElementsByClassName("button checkout")[0].click();
     var p = setInterval(function() { 
@@ -197,6 +199,3 @@ function setInput(element, value) {
     do { curDate = new Date(); }
     while(curDate-date < millis);
 }
-
-
-
