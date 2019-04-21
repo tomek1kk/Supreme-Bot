@@ -23,12 +23,13 @@ var REFRESH_INTERVAL = 2000;
 
 const MAIN_URL = "https://www.supremenewyork.com/shop/all";
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
+const TIME_SERVER_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=SxiYpwxzxdmqzwTHoxfoXGZwOvhLfnIYPmnMBGWiqdQlvE4aKHXZ_n7chjoFITw7uIlzs1hsnBMBOg34RHnSH3SqoEKW_wJ-m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJ9GRkcRevgjTvo8Dc32iw_BLJPcPfRdVKhJT5HNzQuXEeN3QFwl2n0M6ZmO-h7C6eIqWsDnSrEd&lib=MwxUjRcLr2qLlnVOLh12wSNkqcO1Ikdrk";
 
 // ----- DROP TIME -----
 var TIMER = true;
 var hour = 19;
-var minute = 28;
-var seconds = 12;
+var minute = 56;
+var seconds = 30;
 
 if (url == MAIN_URL)
 {
@@ -36,8 +37,7 @@ if (url == MAIN_URL)
 	if (TIMER == true)
 	{
         var table = [1, 2, 3];
-        fetch("https://script.googleusercontent.com/macros/echo?user_content_key=SxiYpwxzxdmqzwTHoxfoXGZwOvhLfnIYPmnMBGWiqdQlvE4aKHXZ_n7chjoFITw7uIlzs1hsnBMBOg34RHnSH3SqoEKW_wJ-m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJ9GRkcRevgjTvo8Dc32iw_BLJPcPfRdVKhJT5HNzQuXEeN3QFwl2n0M6ZmO-h7C6eIqWsDnSrEd&lib=MwxUjRcLr2qLlnVOLh12wSNkqcO1Ikdrk")
-        .then(timer => timer.json())
+        fetch(TIME_SERVER_URL).then(timer => timer.json())
         .then(timer => { 
                 var totalTime = ((hour - timer.hours - 2) * 3600000) + ((minute - timer.minutes) * 60000) + ((seconds - timer.seconds) * 1000);
                 console.log("Program will start in " + totalTime/1000 + " seconds");
