@@ -1,7 +1,7 @@
 var url = window.location.href;
 
-var items = [ ["shirts", ["Vertical Stripe"], "Large", ["Navy"]] ,
-              ["sweatshirts", ["Zip"], "Large", ["Red"]] ];
+var items = [ ["shirts", ["Vertical Stripe"], "Medium", ["Navy"]] ];
+             // ["sweatshirts", ["Zip"], "Large", ["Red"]] ];
 
 var BILLING_INFO = {
     //"name": "Tomasz Kostowski",
@@ -14,12 +14,12 @@ var BILLING_INFO = {
     "number": "1111 1111 1111 1111",
     "cvv": "123"
 }
+
 var TYP_KARTY = 0;
 var MIESIAC_KARTY = 10;
 var ROK_KARTY = 2020;
 var CHECKOUT_DELAY = 3000;
 var REFRESH_INTERVAL = 2000;
-
 
 const MAIN_URL = "https://www.supremenewyork.com/shop/all";
 const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
@@ -48,9 +48,12 @@ if (url == MAIN_URL)
 		pickCategory(items[0][0]);
 	}
 }
-if (url == MAIN_URL + "/" + items[sessionStorage.getItem('itemsAdded')][0])
+if (parseInt(sessionStorage.getItem('itemsAdded')) < items.length)
 {
-    pickItem(items[sessionStorage.getItem('itemsAdded')][1], items[sessionStorage.getItem('itemsAdded')][3]);
+    if (url == MAIN_URL + "/" + items[sessionStorage.getItem('itemsAdded')][0])
+    {
+        pickItem(items[sessionStorage.getItem('itemsAdded')][1], items[sessionStorage.getItem('itemsAdded')][3]);
+    }
 }
 if (url.length > MAIN_URL.length + 15)
 {
@@ -179,7 +182,6 @@ function pickSize(size)
 function checkout()
 {
      chrome.runtime.sendMessage({redirect: CHECKOUT_URL});
-
 }
 
 function setInput(element, value) {
