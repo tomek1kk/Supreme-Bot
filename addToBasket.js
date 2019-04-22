@@ -1,21 +1,22 @@
 var url = window.location.href;
 
-var items = [ ["sweatshirts", ["Zip"], "XLarge", ["Red"]] ];
+var items = [ ["sweatshirts", ["Zip Up"], "XLarge", ["Red"]] ];
              // ["sweatshirts", ["Zip"], "Large", ["Red"]] ];
 
+var SET_COUNTRY = true;
 var BILLING_INFO = {
-    //"name": "Tomasz Kostowski",
-    //"email": "tomek1kkgw@gmail.com",
-    //"tel": "570650687",
-    //"address": "Wegierska 1 m12",
-    //"address 2": "",
-    //"zip": "02319",
-    //"city": "Warsaw",
+    // "name": "Test Name",
+    // "email": "email@gmail.com",
+    // "tel": "123456789",
+    // "address": "ulica nr domu",
+    // "address 2": "",
+    // "zip": "02319",
+    // "city": "Warsaw",
     "number": "1111 1111 1111 1111",
     "cvv": "123"
 }
 
-var TYP_KARTY = 0;
+var TYP_KARTY = 0; // 0 for VISA, 1 for MASTERCARD
 var MIESIAC_KARTY = 10;
 var ROK_KARTY = 2020;
 var CHECKOUT_DELAY = 3000;
@@ -27,9 +28,9 @@ const TIME_SERVER_URL = "https://script.googleusercontent.com/macros/echo?user_c
 
 // ----- DROP TIME -----
 var TIMER = true;
-var hour = 19;
-var minute = 56;
-var seconds = 30;
+var hour = 11;
+var minute = 48;
+var seconds = 20;
 
 if (url == MAIN_URL)
 {
@@ -146,6 +147,12 @@ function autoFill(info)
             }     
         }
     });
+
+    // document.getElementById("order_billing_name").value = "First Last";
+    // document.getElementById("order_billing_zip").value = "02319";
+    // if (SET_COUNTRY == true)
+    //     document.getElementById("order_billing_country").selectedIndex = 25;
+
     document.getElementById("credit_card_month").selectedIndex = MIESIAC_KARTY - 1;
     document.getElementById("credit_card_year").selectedIndex = ROK_KARTY - 2019;
     document.getElementById("order_terms").checked = true;
