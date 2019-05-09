@@ -2,6 +2,7 @@ var saveButton= document.querySelector(".save");
 var newItemButton = document.querySelector(".addField");
 var timer = document.querySelector(".timer");
 var removeLast = document.querySelector(".removeLast");
+var start = document.querySelector(".start");
 
 saveButton.addEventListener("click", function () {
 
@@ -22,13 +23,20 @@ saveButton.addEventListener("click", function () {
     }
 
     var items = [[], [], [], [], []];
-    
+
     for (var i = 0; i < itemNames.length; i++)
     {
-      items[0][i] = itemNames[i].value;
+      items[0][i] = itemNames[i].value.toLowerCase().trim();
       items[1][i] = categories[i].children[categories[i].selectedIndex].textContent;
-      items[2][i] = sizes[i].value;
-      items[3][i] = colors[i].value;
+      var s = sizes[i].value;
+      s = s.toLowerCase().trim();
+      if (s == "s") s = "small";
+      else if (s == "m") s = "medium";
+      else if (s == "l") s = "large";
+      else if (s == "xl") s = "xlarge";
+      else if (s == "x-large") s = "xlarge";
+      items[2][i] = s;
+      items[3][i] = colors[i].value.toLowerCase().trim();
       items[4][i] = anyColors[i].checked;
     }
 
@@ -168,7 +176,13 @@ removeLast.addEventListener("click", function()
       anyColor.parentNode.removeChild(anyColor);
       var clear = document.getElementsByClassName("clear")[n - 1];
       clear.parentNode.removeChild(clear);
-      var br = document.getElementsByClassName("break")[n - 1];
+      var br = document.getElementsByClassName("break")[n - 2];
       br.parentNode.removeChild(br);
     }
+});
+
+start.addEventListener("click", function()
+{
+  chrome.storage.sync.set({startuj: "1"});
+  chrome.tabs.create({ url: "https://supremenewyork.com/shop/all" });
 });

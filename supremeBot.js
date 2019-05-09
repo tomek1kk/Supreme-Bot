@@ -3,13 +3,16 @@ const CHECKOUT_URL = "https://www.supremenewyork.com/checkout";
 const TIME_SERVER_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=SxiYpwxzxdmqzwTHoxfoXGZwOvhLfnIYPmnMBGWiqdQlvE4aKHXZ_n7chjoFITw7uIlzs1hsnBMBOg34RHnSH3SqoEKW_wJ-m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJ9GRkcRevgjTvo8Dc32iw_BLJPcPfRdVKhJT5HNzQuXEeN3QFwl2n0M6ZmO-h7C6eIqWsDnSrEd&lib=MwxUjRcLr2qLlnVOLh12wSNkqcO1Ikdrk";
 
 chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'cardNumber', 'cvvNumber',
-                        'month', 'year', 'checkoutDelay', 'refreshInterval', 'empty', 'items', 'cardType'], function(result) {
+                        'month', 'year', 'checkoutDelay', 'refreshInterval', 'empty', 'items', 'cardType', 'startuj'], function(result) {
 
     var url = window.location.href; 
-    if (url == "chrome-extension://ohbnlbmfcpflklecikkianpmjpikonmh/popup.html")
+
+    if (url.includes("chrome-extension"))
     {
-        document.getElementsByClassName("checkoutDelay")[0].value = result.checkoutDelay;
-        document.getElementsByClassName("refreshInterval")[0].value = result.refreshInterval;
+        if (result.checkoutDelay != null)
+            document.getElementsByClassName("checkoutDelay")[0].value = result.checkoutDelay;
+        if (result.refreshInterval != null)
+            document.getElementsByClassName("refreshInterval")[0].value = result.refreshInterval;
         document.getElementsByClassName("emptyBasket")[0].checked = result.empty;
         document.getElementsByClassName("timer")[0].checked = result.timer;
         if (result.timer == true)
@@ -24,10 +27,16 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
             document.getElementById("second").type = "text";
             document.getElementsByClassName("timeLabel")[0].style.display = 'block';
         }
-        document.getElementsByClassName("creditNumber")[0].value = result.cardNumber;
-        document.getElementsByClassName("cvvNumber")[0].value = result.cvvNumber;
-        document.getElementsByClassName("month")[0].value = result.month;
-        document.getElementsByClassName("year")[0].value = result.year;
+        if (result.year.length == 2)
+            result.year = (parseInt(result.year) + 2000).toString();
+        if (result.cardNumber != null)
+            document.getElementsByClassName("creditNumber")[0].value = result.cardNumber;
+        if (result.cvvNumber != null)
+            document.getElementsByClassName("cvvNumber")[0].value = result.cvvNumber;
+        if (result.month != null)
+            document.getElementsByClassName("month")[0].value = result.month;
+        if (result.year != null)
+            document.getElementsByClassName("year")[0].value = result.year;
         document.getElementsByClassName("cardType")[0].selectedIndex = result.cardType;
 
 		if (result.items != null)
@@ -71,8 +80,9 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
         }
 
 
-        if (url == MAIN_URL) // main page
+        if (url == MAIN_URL && result.startuj == "1") // main page
         {
+            chrome.storage.sync.set({startuj: "0"});
             if (document.getElementById("cart").className == "hidden" || result.empty == false)
             {
                 if (document.getElementById("cart").className == "hidden")
@@ -90,7 +100,6 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
                         .then(timer => { 
                                 var totalTime = ((result.hour - timer.hours - 2) * 3600000) + ((result.minute - timer.minutes) * 60000) + ((result.second - timer.seconds) * 1000);
                                 console.log("Program will start in " + totalTime/1000 + " seconds");
-                                //setTimeout("pickCategory(items[1][0])", totalTime);
                                 setTimeout(function() { pickCategory(items[1][0]); }, totalTime);
                         });
                     }
@@ -99,7 +108,6 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
                         var today = new Date();
                         var totalTime = ((result.hour - today.getHours()) * 3600000) + ((result.minute - today.getMinutes()) * 60000) + ((result.second - today.getSeconds()) * 1000);
                         console.log("Program will start in " + totalTime/1000 + " seconds");
-                        //setTimeout("pickCategory(items[1][0])", totalTime);
                         setTimeout(function() { pickCategory(items[1][0]); }, totalTime);
                     }
                 }
@@ -155,7 +163,8 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
         else if (url == CHECKOUT_URL) // in checkout
         {
             autoFill(BILLING_INFO);
-            setTimeout(function() { document.getElementsByName("commit")[0].click(); }, result.checkoutDelay);
+            setTimeout(function() { if (document.getElementsByName("commit")[0])
+                                    document.getElementsByName("commit")[0].click(); }, result.checkoutDelay);
         }
 
         function pickItem(name, color, anycolor)
@@ -170,7 +179,7 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
                     {
                         for (var k = 0; k < color.length; k++)
                         {
-                            if ((products[i].innerHTML).includes(name[j]) && (products[i+1].innerHTML).includes(color[k]))
+                            if ((products[i].innerHTML.toLowerCase()).includes(name[j]) && (products[i+1].innerHTML.toLowerCase()).includes(color[k]))
                             {
                                 found = true;
                                 chrome.runtime.sendMessage({redirect: products[i].href});
@@ -186,7 +195,7 @@ chrome.storage.sync.get(['timer', 'serverTime', 'hour', 'minute', 'second', 'car
                 {
                     for (var j = 0; j < name.length; j++)
                     {
-                        if ((products[i].innerHTML).includes(name[j]))
+                        if ((products[i].innerHTML.toLowerCase()).includes(name[j]))
                         {
                             found = true;
                             chrome.runtime.sendMessage({redirect: products[i].href});
@@ -260,11 +269,12 @@ function pickSize(size)
     var selectbox = document.getElementById("size");
     for (var i = 0; i < selectbox.length; i++)
     {
-        if (selectbox.options[i].label == size)
+        if (selectbox.options[i].label.toLowerCase() == size)
         {
             selectbox.selectedIndex = i;
             break;
         }
     }
 }
+
 
