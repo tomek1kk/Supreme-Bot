@@ -73,6 +73,26 @@
         <div class="clear"></div>
         <br/>
     </form>
+    <form name="addressForm" id="addressForm">
+        <label>Fill address:</label>
+        <input type="checkbox" id="fillAddress">
+        <label type="hidden" class="addressLabel">Full name:</label>
+        <input type="hidden" id="fullName" class="address">
+        <label type="hidden" class="addressLabel">email:</label>
+        <input type="hidden" id="email" class="address">
+        <label type="hidden" class="addressLabel">tel:</label>
+        <input type="hidden" id="tel" class="address">
+        <label type="hidden" class="addressLabel">address:</label>
+        <input type="hidden" id="address" class="address">
+        <label type="hidden" class="addressLabel">address2:</label>
+        <input type="hidden" id="address2" class="address">
+        <label type="hidden" class="addressLabel">city:</label>
+        <input type="hidden" id="city" class="address">
+        <label type="hidden" class="addressLabel">postcode:</label>
+        <input type="hidden" id="postcode" class="address">
+        <div class="clear"></div>
+        <br/>
+    </form>
     <label>Always click save button after any changes!</label>
     <button class="start">Start</button>
     <button class="save">Save</button>
@@ -99,6 +119,8 @@
     .time { width: 240px;}
     .deleteButton { width: 245px; margin: 5px;}
     .save { background-color: red; color: white;}
+    .addressLabel {display: none;}
+    .address {width: 240px;}
     </style>
 </body>
 </html>

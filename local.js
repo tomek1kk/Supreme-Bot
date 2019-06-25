@@ -1,6 +1,7 @@
 var saveButton= document.querySelector(".save"); 
 var newItemButton = document.querySelector(".addField");
 var timer = document.querySelector(".timer");
+var fillAddress = document.getElementById("fillAddress");
 var removeLast = document.querySelector(".removeLast");
 var start = document.querySelector(".start");
 
@@ -38,6 +39,24 @@ saveButton.addEventListener("click", function () {
       items[2][i] = s;
       items[3][i] = colors[i].value.toLowerCase().trim();
       items[4][i] = anyColors[i].checked;
+    }
+
+    for (var i = 0; i < items[0].length; i++)
+    {
+        items[0][i] = items[0][i].split(",");
+        items[3][i] = items[3][i].split(",");
+    }
+
+    chrome.storage.sync.set({fillAddress: document.getElementById("fillAddress").checked});
+    if (document.getElementById("fillAddress").checked == true)
+    {
+        chrome.storage.sync.set({fullName: document.getElementById("fullName").value});
+        chrome.storage.sync.set({email: document.getElementById("email").value});
+        chrome.storage.sync.set({tel: document.getElementById("tel").value});
+        chrome.storage.sync.set({address: document.getElementById("address").value});
+        chrome.storage.sync.set({address2: document.getElementById("address2").value});
+        chrome.storage.sync.set({city: document.getElementById("city").value});
+        chrome.storage.sync.set({postcode: document.getElementById("postcode").value});
     }
 
     chrome.storage.sync.set({cardType: document.querySelector('select[class="cardType"]').selectedIndex});
@@ -148,6 +167,34 @@ timer.addEventListener("click", function()
     });
 
   }
+});
+
+fillAddress.addEventListener("click", function()
+{
+    var addressLabel = document.querySelectorAll(".addressLabel");
+    var address = document.querySelectorAll(".address");
+    if (this.checked == true)
+    {
+        addressLabel.forEach(function(element)
+        {
+            element.style.display = 'block';
+        });
+        address.forEach(function(element)
+        {
+            element.type = "text";
+        });
+    }
+    else
+    {
+        addressLabel.forEach(function(element)
+        {
+            element.style.display = 'none';
+        });
+        address.forEach(function(element)
+        {
+            element.type = "hidden";
+        });
+    }
 });
 
 removeLast.addEventListener("click", function()
