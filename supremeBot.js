@@ -182,7 +182,7 @@ else if (url.includes("supremenewyork.com"))
             else
                 var BILLING_INFO = {"number": result.cardNumber, "cvv": result.cvvNumber};
             //console.log(BILLING_INFO);
-            autoFill(BILLING_INFO, result.month, result.year, result.cardType);
+            autoFill(BILLING_INFO, result.month, result.year, result.cardType, result.cvvNumber);
             setTimeout(function() { if (document.getElementsByName("commit")[0])
                                     document.getElementsByName("commit")[0].click(); }, result.checkoutDelay);
         });
@@ -250,17 +250,21 @@ function pickItem(items, name, color, anycolor, refreshInterval)
         setTimeout(function() {location.reload();}, refreshInterval);
 }
 
-function autoFill(info, month, year, cardType)
+function autoFill(info, month, year, cardType, cvv)
 {
     var inputs = document.querySelectorAll('input:not([type=submit]):not([type=hidden])');
     inputs.forEach(function(element) 
     {
+		console.log(element);
         console.log("autofiluje!");
         var prev_sibling = element.previousElementSibling;
         if (prev_sibling != null) 
         {
             var label_text = prev_sibling.innerHTML.toLowerCase();
             var value = info[label_text];
+			console.log("label_text: " + label_text);
+			console.log("info[label_text]: " + info[label_text]);
+			
             if (value != null)
                 setInput(element, value);   
         }
@@ -273,6 +277,7 @@ function autoFill(info, month, year, cardType)
     document.getElementById("credit_card_year").selectedIndex = year - 2019;
     document.getElementById("order_terms").checked = true;
     document.getElementById("order_terms").parentElement.classList.add('checked');
+	document.getElementById("vval").value = cvv;
 }
 
 function pickCategory(cat)

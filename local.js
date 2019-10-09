@@ -231,5 +231,5 @@ removeLast.addEventListener("click", function()
 start.addEventListener("click", function()
 {
   chrome.storage.sync.set({startuj: "1"});
-  chrome.tabs.create({ url: "https://supremenewyork.com/shop/all" });
+  chrome.tabs.create({ url: "https://www.supremenewyork.com/shop/all" });
 });
