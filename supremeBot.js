@@ -274,7 +274,7 @@ function autoFill(info, month, year, cardType, cvv)
     if (document.getElementById("order_billing_country").selectedIndex != 25)
         document.getElementById("order_billing_country").selectedIndex = 25;
     document.getElementById("credit_card_month").selectedIndex = month - 1;
-    document.getElementById("credit_card_year").selectedIndex = year - 2019;
+    document.getElementById("credit_card_year").selectedIndex = year - new Date().getFullYear;
     document.getElementById("order_terms").checked = true;
     document.getElementById("order_terms").parentElement.classList.add('checked');
 	document.getElementById("vval").value = cvv;
